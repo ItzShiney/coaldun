@@ -1,0 +1,59 @@
+tiles:
+    floors:
+        grass: {}
+        planks: {}
+    walls:
+        bedrock:
+            breakable:
+            
+        planks:
+            breakable:
+                tool: axe
+                power: 2
+
+entities:
+    player:
+        model: none
+    
+    skeleton: {}
+
+assets:
+    - skins/mayuri
+    - skins/ougi
+    - skins/suisei
+
+init:
+    - !Place
+        ty: !Floor grass
+        min: [0, 0]
+        max: [38, 24]
+
+    - !Place
+        ty: !Wall bedrock
+        min: [0, 0]
+        max: [38, 24]
+        hollow: true
+
+    - !Spawn
+        ty: player
+        pos: [18, 12]
+        data:
+            model: skins/suisei
+            player_id: 0
+            player_controller:
+                up: W
+                down: S
+                left: A
+                right: D
+
+    - !Spawn
+        ty: player
+        pos: [20, 12]
+        data:
+            model: skins/ougi
+            player_id: 1
+            player_controller:
+                up: Up
+                down: Down
+                left: Left
+                right: Right
