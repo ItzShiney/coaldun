@@ -23,7 +23,7 @@ impl Logger {
         }
     }
 
-    pub fn push(&mut self, message: String) {
+    pub fn insert(&mut self, message: String) {
         if !self.messages.contains(&message) {
             if !self.buffer.is_empty() {
                 self.buffer.push('\n');

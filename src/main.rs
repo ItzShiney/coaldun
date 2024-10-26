@@ -347,7 +347,7 @@ fn main() {
         }
         .filter_map(|asset| {
             let Ok(texture) = Texture::from_file(&format!("assets/{asset}.png")) else {
-                logger.push(format!("failed to load {asset}"));
+                logger.insert(format!("failed to load {asset}"));
                 return None;
             };
 
@@ -426,7 +426,7 @@ fn main() {
 
             for (pos, asset) in posed_assets {
                 let Some(texture) = assets.get(asset) else {
-                    logger.push(format!("missing texture for {asset}"));
+                    logger.insert(format!("missing texture for {asset}"));
                     continue;
                 };
 
