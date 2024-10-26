@@ -130,46 +130,16 @@ impl ModelConfig {
     }
 }
 
-#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[serde(from = "[u32; 2]")]
-pub struct TilePos {
-    pub x: u32,
-    pub y: u32,
-}
-
-impl TilePos {
-    pub const fn vec(self) -> Vector2u {
-        Vector2u::new(self.x, self.y)
-    }
-}
-
-impl From<TilePos> for Vector2u {
-    fn from(value: TilePos) -> Self {
-        value.vec()
-    }
-}
-
-impl From<Vector2u> for TilePos {
-    fn from(vec: Vector2u) -> Self {
-        Self { x: vec.x, y: vec.y }
-    }
-}
-
-impl From<[u32; 2]> for TilePos {
-    fn from([x, y]: [u32; 2]) -> Self {
-        Self { x, y }
-    }
-}
-
 #[derive(Debug, Default)]
 struct Field {
-    floors: BTreeMap<TilePos, AssetedFloorType>,
-    walls: BTreeMap<TilePos, AssetedWallType>,
+    floors: BTreeMap<(u32, u32), AssetedFloorType>,
+    walls: BTreeMap<(u32, u32), AssetedWallType>,
     entities: Vec<Entity>,
 }
 
 impl Field {
-    pub fn insert(&mut self, pos: TilePos, ty: AssetedTileType) {
+    pub fn insert(&mut self, pos: Vector2u, ty: AssetedTileType) {
+        let pos = (pos.x, pos.y);
         match ty {
             AssetedTileType::Floor(ty) => _ = self.floors.insert(pos, ty),
             AssetedTileType::Wall(ty) => _ = self.walls.insert(pos, ty),
@@ -180,7 +150,7 @@ impl Field {
 #[derive(Debug)]
 struct Entity {
     pub ty: AssetedEntityType,
-    pub pos: TilePos,
+    pub pos: Vector2u,
     pub data: EntityData,
 }
 
@@ -241,11 +211,11 @@ enum InitAction {
 #[derive(Debug, Deserialize, Clone, Copy)]
 enum TilePoses {
     #[serde(rename = "pos")]
-    Pos(TilePos),
+    Pos(Vector2u),
 
     #[serde(untagged)]
     Rect {
-        min: TilePos,
+        min: Vector2u,
         #[serde(flatten)]
         end: RectEnd,
         #[serde(default)]
@@ -254,7 +224,7 @@ enum TilePoses {
 }
 
 impl TilePoses {
-    pub fn for_each(self, mut f: impl FnMut(TilePos)) {
+    pub fn for_each(self, mut f: impl FnMut(Vector2u)) {
         match self {
             Self::Pos(pos) => f(pos),
 
@@ -262,18 +232,18 @@ impl TilePoses {
                 let max = end.max(min);
                 if hollow {
                     for x in min.x..=max.x {
-                        f([x, min.y].into());
-                        f([x, max.y].into());
+                        f((x, min.y).into());
+                        f((x, max.y).into());
                     }
 
                     for y in min.y + 1..max.y {
-                        f([min.x, y].into());
-                        f([max.x, y].into());
+                        f((min.x, y).into());
+                        f((max.x, y).into());
                     }
                 } else {
                     for x in min.x..=max.x {
                         for y in min.y..=max.y {
-                            f([x, y].into());
+                            f((x, y).into());
                         }
                     }
                 }
@@ -285,18 +255,18 @@ impl TilePoses {
 #[derive(Debug, Deserialize, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 enum RectEnd {
-    Max(TilePos),
-    Size(TilePos),
+    Max(Vector2u),
+    Size(Vector2u),
 }
 
 impl RectEnd {
-    fn max(self, min: TilePos) -> TilePos {
+    pub const fn max(self, min: Vector2u) -> Vector2u {
         match self {
             Self::Max(max) => max,
-            Self::Size(size) => TilePos::from([
+            Self::Size(size) => Vector2u::new(
                 min.x + size.x.saturating_sub(1),
                 min.y + size.y.saturating_sub(1),
-            ]),
+            ),
         }
     }
 }
@@ -423,10 +393,10 @@ fn main() {
                     );
 
                     let new_pos = {
-                        let res = player.pos.vec().as_other::<i32>() + dpos;
+                        let res = player.pos.as_other::<i32>() + dpos;
                         let x = (res.x.max(0_i32) as u32).min(FIELD_MAX.x);
                         let y = (res.y.max(0_i32) as u32).min(FIELD_MAX.y);
-                        TilePos { x, y }
+                        Vector2u { x, y }
                     };
 
                     if player.pos != new_pos {
@@ -439,8 +409,13 @@ fn main() {
             window.clear(BG_COLOR);
 
             let posed_assets = {
-                let floors = field.floors.iter().map(|(&pos, ty)| (pos, &ty.asset));
-                let walls = field.walls.iter().map(|(&pos, ty)| (pos, &ty.asset));
+                let floors = field
+                    .floors
+                    .iter()
+                    .map(|(&pos, ty)| (pos.into(), &ty.asset));
+
+                let walls = field.walls.iter().map(|(&pos, ty)| (pos.into(), &ty.asset));
+
                 let entities = field.entities.iter().map(|entity| {
                     let asset = entity.data.model.as_ref().unwrap_or(&entity.ty.asset);
                     (entity.pos, asset)
@@ -456,7 +431,7 @@ fn main() {
                 };
 
                 let mut sprite = Sprite::with_texture(texture);
-                sprite.set_position((pos.vec() * TILE_SIZE).as_other());
+                sprite.set_position((pos * TILE_SIZE).as_other());
                 window.draw(&sprite);
             }
 
