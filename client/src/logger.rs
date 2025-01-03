@@ -4,6 +4,7 @@ use sfml::graphics::RenderStates;
 use sfml::graphics::RenderTarget;
 use sfml::graphics::Text;
 use sfml::graphics::Transformable;
+use sfml::system::Vector2f;
 use sfml::SfBox;
 use std::ops::Deref;
 use std::ops::DerefMut;
@@ -23,34 +24,41 @@ impl Logger {
         }
     }
 
-    pub fn insert(&mut self, message: String) {
-        if !self.messages.contains(&message) {
-            if !self.buffer.is_empty() {
-                self.buffer.push('\n');
-            }
-            self.buffer.push_str(&message);
+    pub fn push(&mut self, message: String) {
+        if !self.buffer.is_empty() {
+            self.buffer.push('\n');
+        }
+        self.buffer.push_str(&message);
+        self.messages.push(message);
+    }
 
-            self.messages.push(message);
+    pub fn push_if_unique(&mut self, message: String) {
+        if !self.messages.contains(&message) {
+            self.push(message);
         }
     }
 
+    pub fn clear(&mut self) {
+        self.messages.clear();
+        self.buffer.clear();
+    }
+
+    #[expect(dead_code)]
     pub fn len(&self) -> usize {
         self.messages.len()
     }
 
+    #[expect(dead_code)]
     pub fn is_empty(&self) -> bool {
         self.messages.is_empty()
     }
 
+    #[expect(dead_code)]
     pub fn get_mut(&mut self, index: usize) -> Option<LoggerMessage<'_>> {
         (index < self.messages.len()).then(move || LoggerMessage {
             logger: self,
             index,
         })
-    }
-
-    pub fn index_mut(&mut self, index: usize) -> LoggerMessage<'_> {
-        self.get_mut(index).unwrap()
     }
 
     fn update_buffer(&mut self) {
@@ -74,9 +82,14 @@ impl Drawable for Logger {
             return;
         }
 
+        let view_pos = {
+            let view = target.view();
+            view.center() - view.size() / 2.
+        };
+
         let mut text = Text::new(&self.buffer, &self.font, 18);
         text.set_scale((0.5, 0.5));
-        text.set_position((5., 5.));
+        text.set_position(view_pos + Vector2f::new(5., 5.));
         text.set_outline_thickness(1.5);
         target.draw_text(&text, states);
     }

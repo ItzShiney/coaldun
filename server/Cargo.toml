@@ -1,0 +1,11 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bincode = "*"
+libloader = "*"
+sfml = "*"
+signals = { path = "../signals" }
+state = { path = "../state" }

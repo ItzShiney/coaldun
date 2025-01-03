@@ -1,0 +1,79 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "clean",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"clean"
+			],
+		},
+		{
+			"label": "run",
+			"type": "shell",
+			"dependsOn": [
+				"| build server",
+				"| run help",
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "run server",
+			"dependsOn": [
+				"build plugin"
+			],
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"run",
+				"--package",
+				"server"
+			],
+			"isBackground": true,
+		},
+		{
+			"label": "build plugin",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"build",
+				"--package",
+				"plugin",
+				"--release"
+			],
+		},
+		{
+			"label": "run client",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"run",
+				"--package",
+				"client",
+			],
+			"options": {
+				"cwd": "${workspaceRoot}/target/debug"
+			},
+			"isBackground": true,
+		},
+		{
+			"label": "| run help",
+			"type": "shell",
+			"dependsOn": [
+				"run server",
+				"run client",
+			],
+		},
+		{
+			"label": "| build server",
+			"type": "shell",
+			"command": "cargo",
+			"args": [
+				"build",
+				"--package",
+				"server",
+			],
+		},
+	],
+}

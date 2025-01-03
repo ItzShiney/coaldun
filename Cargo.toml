@@ -1,17 +1,8 @@
-[package]
-name = "cd_combat_test"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = ["client", "plugin", "server", "signals", "state"]
+resolver = "2"
 
-[dependencies]
-serde = { version = "*", features = ["derive"] }
-serde_yaml = "*"
-sfml = { version = "*", features = ["serde"] }
-
-[lints.rust]
-unsafe_code = "forbid"
-
-[lints.clippy]
+[workspace.lints.clippy]
 nursery = { level = "warn", priority = -1 }
 pedantic = { level = "warn", priority = -1 }
 cast_possible_truncation = "allow"
@@ -22,6 +13,7 @@ module_name_repetitions = "allow"
 missing_panics_doc = "allow"
 return_self_not_must_use = "allow"
 must_use_candidate = "allow"
+wildcard_imports = "allow"
 
 alloc_instead_of_core = "warn"
 allow_attributes = "warn"
@@ -31,7 +23,6 @@ cfg_not_test = "warn"
 clone_on_ref_ptr = "warn"
 create_dir = "warn"
 decimal_literal_representation = "warn"
-default_numeric_fallback = "warn"
 default_union_representation = "warn"
 deref_by_slicing = "warn"
 disallowed_script_idents = "warn"
