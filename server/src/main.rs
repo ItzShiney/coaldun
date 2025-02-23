@@ -2,8 +2,7 @@
 //! Допустимость проверяется через методы у `State`, у самого сервера их не должно быть
 
 use libloader::libloading::os::windows::Library;
-use std::env;
-use std::net::TcpListener;
+use std::{env, net::TcpListener};
 
 mod client;
 mod plugin;

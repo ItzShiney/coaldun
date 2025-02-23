@@ -1,13 +1,9 @@
-use sfml::graphics::Drawable;
-use sfml::graphics::Font;
-use sfml::graphics::RenderStates;
-use sfml::graphics::RenderTarget;
-use sfml::graphics::Text;
-use sfml::graphics::Transformable;
-use sfml::system::Vector2f;
-use sfml::SfBox;
-use std::ops::Deref;
-use std::ops::DerefMut;
+use sfml::{
+    SfBox,
+    graphics::{Drawable, Font, RenderStates, RenderTarget, Text, Transformable},
+    system::Vector2f,
+};
+use std::ops::{Deref, DerefMut};
 
 pub struct Logger {
     font: SfBox<Font>,

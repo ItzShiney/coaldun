@@ -1,6 +1,5 @@
 use sfml::system::Vector2i as Vec2;
-use std::collections::HashMap;
-use std::fmt::Debug;
+use std::{collections::HashMap, fmt::Debug};
 
 pub fn vec2(x: i32, y: i32) -> Vec2 {
     Vec2::new(x, y)

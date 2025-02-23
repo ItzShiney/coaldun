@@ -1,6 +1,7 @@
-use libloader::libloading::os::windows::Library;
-use libloader::libloading::os::windows::Symbol as LibSymbol;
-use libloader::libloading::Error as LibError;
+use libloader::libloading::{
+    Error as LibError,
+    os::windows::{Library, Symbol as LibSymbol},
+};
 use state::State;
 use std::ffi::c_void;
 

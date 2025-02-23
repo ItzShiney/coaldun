@@ -53,7 +53,7 @@ impl Plugin {
     }
 
     #[unsafe(no_mangle)]
-    pub extern "Rust" fn handle_event(&mut self, _state: &mut State) {}
+    pub const extern "Rust" fn handle_event(&mut self, _state: &mut State) {}
 }
 
 #[unsafe(no_mangle)]

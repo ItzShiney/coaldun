@@ -1,7 +1,5 @@
-use super::AssetId;
-use super::Position;
-use serde::Deserialize;
-use serde::Serialize;
+use super::{AssetId, Position};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EntityId(pub usize);

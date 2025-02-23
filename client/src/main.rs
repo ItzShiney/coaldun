@@ -1,39 +1,23 @@
-use sfml::graphics::Color;
-use sfml::graphics::Font;
-use sfml::graphics::Rect;
-use sfml::graphics::RenderTarget;
-use sfml::graphics::RenderWindow;
-use sfml::graphics::Sprite;
-use sfml::graphics::Texture;
-use sfml::graphics::Transformable;
-use sfml::graphics::View;
-use sfml::system::Vector2;
-use sfml::system::Vector2i;
-use sfml::system::Vector2u;
-use sfml::window;
-use sfml::window::ContextSettings;
-use sfml::window::Event;
-use sfml::window::Key;
-use sfml::SfBox;
-use sfml::SfError;
-use signals::AssetData;
-use signals::AssetId;
-use signals::Auth;
-use signals::Authorized;
-use signals::ClientUpdate;
-use signals::Entity;
-use signals::EntityId;
-use signals::PlayerSignal;
-use signals::Position;
-use signals::Tile;
-use std::collections::HashMap;
-use std::fs;
-use std::io;
-use std::net::Ipv4Addr;
-use std::net::SocketAddr;
-use std::net::TcpStream;
-use std::str::FromStr;
-use std::time::Duration;
+use sfml::{
+    SfBox, SfError,
+    graphics::{
+        Color, Font, Rect, RenderTarget, RenderWindow, Sprite, Texture, Transformable, View,
+    },
+    system::{Vector2, Vector2i, Vector2u},
+    window,
+    window::{ContextSettings, Event, Key},
+};
+use signals::{
+    AssetData, AssetId, Auth, Authorized, ClientUpdate, Entity, EntityId, PlayerSignal, Position,
+    Tile,
+};
+use std::{
+    collections::HashMap,
+    fs, io,
+    net::{Ipv4Addr, SocketAddr, TcpStream},
+    str::FromStr,
+    time::Duration,
+};
 
 mod logger;
 

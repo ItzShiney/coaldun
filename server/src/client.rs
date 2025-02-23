@@ -1,6 +1,5 @@
 use signals::PlayerSignal;
-use std::io::BufReader;
-use std::net::TcpStream;
+use std::{io::BufReader, net::TcpStream};
 
 pub struct Client {
     stream: BufReader<TcpStream>,

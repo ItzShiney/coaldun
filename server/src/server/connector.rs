@@ -1,12 +1,11 @@
 use super::ServerUpdater;
 use crate::Client;
-use state::EntityId;
-use state::ObjectType;
-use state::State;
-use std::io;
-use std::mem::take;
-use std::net::TcpListener;
-use std::net::TcpStream;
+use state::{EntityId, ObjectType, State};
+use std::{
+    io,
+    mem::take,
+    net::{TcpListener, TcpStream},
+};
 
 fn make_init_signal(state: &State) -> signals::ClientUpdate {
     // FIXME
@@ -86,16 +85,13 @@ fn make_init_signal(state: &State) -> signals::ClientUpdate {
                 (entity.asset.as_ref()).unwrap_or_else(|| &state.get_type(entity.type_id).asset);
             let asset_id = asset_to_id(asset);
 
-            (
-                signals::EntityId(entity_id.into()),
-                signals::Entity {
-                    asset_id,
-                    pos: signals::Position {
-                        x: entity.pos.x,
-                        y: entity.pos.y,
-                    },
+            (signals::EntityId(entity_id.into()), signals::Entity {
+                asset_id,
+                pos: signals::Position {
+                    x: entity.pos.x,
+                    y: entity.pos.y,
                 },
-            )
+            })
         })
         .collect();
 
@@ -144,13 +140,10 @@ impl ServerConnector {
 
                     {
                         let update = make_init_signal(state);
-                        bincode::serialize_into(
-                            &mut stream,
-                            &signals::Authorized {
-                                player_entity_id: signals::EntityId(entity_id.into()),
-                                update,
-                            },
-                        )
+                        bincode::serialize_into(&mut stream, &signals::Authorized {
+                            player_entity_id: signals::EntityId(entity_id.into()),
+                            update,
+                        })
                         .ok()?;
                     }
 
